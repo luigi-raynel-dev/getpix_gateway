@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  ### 🚀 Aplicação HyperF com Swoole ###
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: fastpix_app
+    restart: unless-stopped
+    depends_on:
+      - kafka
+    environment:
+      - APP_ENV=local
+      - DB_CONNECTION=mongo
+      - DB_HOST=mongo
+      - DB_PORT=27017
+      - KAFKA_BROKER=kafka:9092
+    ports:
+      - "9501:9501"
+    volumes:
+      - .:/var/www
+      - ./html:/var/www/html
+    networks:
+      - docker_dbserver_default
+  
+  ### 🔄 Kafka + Zookeeper ###
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    container_name: fastpix_zookeeper
+    restart: unless-stopped
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    container_name: fastpix_kafka
+    restart: unless-stopped
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
+networks:
+  docker_dbserver_default:
+    external: true
