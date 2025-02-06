@@ -19,8 +19,8 @@ services:
     ports:
       - "9501:9501"
     volumes:
-      - .:/var/www
       - ./html:/var/www/html
+    working_dir: /var/www/html
     networks:
       - docker_dbserver_default
   
