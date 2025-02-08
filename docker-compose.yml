@@ -10,6 +10,7 @@ services:
     restart: unless-stopped
     depends_on:
       - kafka
+      - redis
     environment:
       - APP_ENV=local
       - DB_CONNECTION=mongo
@@ -45,6 +46,13 @@ services:
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
+  redis:
+    image: redis:latest
+    container_name: fastpix_redis
+    restart: always
+    ports:
+      - "6379:6379"
 
 networks:
   docker_dbserver_default:
