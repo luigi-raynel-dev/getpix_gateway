@@ -6,7 +6,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: fastpix_app
+    container_name: getpix_app
     restart: unless-stopped
     depends_on:
       - kafka
@@ -28,14 +28,14 @@ services:
   ### 🔄 Kafka + Zookeeper ###
   zookeeper:
     image: confluentinc/cp-zookeeper:latest
-    container_name: fastpix_zookeeper
+    container_name: getpix_zookeeper
     restart: unless-stopped
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
 
   kafka:
     image: confluentinc/cp-kafka:latest
-    container_name: fastpix_kafka
+    container_name: getpix_kafka
     restart: unless-stopped
     depends_on:
       - zookeeper
@@ -49,7 +49,7 @@ services:
 
   redis:
     image: redis:latest
-    container_name: fastpix_redis
+    container_name: getpix_redis
     restart: always
     ports:
       - "6379:6379"
