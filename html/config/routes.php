@@ -14,6 +14,13 @@ use Hyperf\HttpServer\Router\Router;
 
 Router::addRoute(['GET', 'POST', 'HEAD'], '/', 'App\Controller\IndexController@index');
 
-Router::get('/ping', function () {
-    return 'pong';
+
+Router::addGroup('/api', function () {
+    Router::get('/ping', function () {
+        return 'pong';
+    });
+
+    Router::post('/sign-in', 'App\Controller\AuthController@signIn');
+    Router::post('/sign-up', 'App\Controller\AuthController@signUp');
+    Router::get('/me', 'App\Controller\AuthController@me');
 });
