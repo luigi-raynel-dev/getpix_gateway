@@ -30,43 +30,37 @@ class AuthRepository implements AuthRepositoryInterface
       return ['error' => 'Usuário não encontrado'];
     }
 
-    if (password_verify($password, $user->password)) {
-      $tokenPayload = [
-        'uuid' => $user->uuid,
-        'email' => $user->email,
-        'iat' => time(),
-      ];
+    // if (password_verify($password, $user->password)) {
+    //   $tokenPayload = [
+    //     'uuid' => $user->uuid,
+    //     'email' => $user->email,
+    //     'iat' => time(),
+    //   ];
 
-      $token = JWT::encode($tokenPayload, $this->jwtSecretKey, 'HS256');
+    //   $token = JWT::encode($tokenPayload, $this->jwtSecretKey, 'HS256');
 
-      return ['token' => $token];
-    } else {
-      return ['error' => 'Senha incorreta'];
-    }
+    //   return ['token' => $token];
+    // }
+
+    return ['error' => 'Senha incorreta'];
   }
 
   private function getUserByEmail($email)
   {
-    return User::where('email', $email)->first();
+    return [];
+    // return new User;
+    // return User::where('email', $email)->first();
   }
 
   public function signUp($request)
   {
-    $user = User::create([
-      'uuid' => Uuid::uuid4()->toString(),
-      'name' => $request->input('name'),
+    $result = (new User)->collection->insertOne([
+      'firstName' => $request->input('firstName'),
+      'lastName' => $request->input('firstName'),
       'email' => $request->input('email'),
-      'birth_date' => $request->input('birth_date'),
-      'document' => $request->input('document'),
-      'cellphone' => $request->input('cellphone'),
-      'password' => password_hash($request->input('password'), PASSWORD_BCRYPT),
-      'created_at' => Carbon::now(),
-      'updated_at' => Carbon::now(),
+      'password' => password_hash($request->input('password'), PASSWORD_BCRYPT)
     ]);
 
-    if ($user) {
-      return true;
-    }
-    return false;
+    return $result;
   }
 }

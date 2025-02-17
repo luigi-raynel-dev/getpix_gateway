@@ -5,12 +5,10 @@ declare(strict_types=1);
 namespace App\Trait;
 
 use App\Factory\MongoDBFactory;
-use MongoDB\Collection;
 
-trait MongoDBTrait
+
+trait MongoDBConnection
 {
-  protected ?Collection $collection = null;
-
   public function connect()
   {
     $db = MongoDBFactory::getDatabase();
@@ -18,7 +16,7 @@ trait MongoDBTrait
     if (isset($this->table)) {
       $this->collection = $db->selectCollection($this->table);
     } else {
-      throw new \Exception('$table not defined.');
+      throw new \Exception('$collection not defined.');
     }
 
     return $this->collection;

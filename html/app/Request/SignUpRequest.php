@@ -19,7 +19,7 @@ class SignUpRequest extends FormRequest
       'firstName' => 'required|string|min:2',
       'lastName' => 'required|string|min:2',
       'email' => 'required|email',
-      'password' => 'required|string|min:8',
+      'password' => 'required|string|min:6',
     ];
   }
 }
