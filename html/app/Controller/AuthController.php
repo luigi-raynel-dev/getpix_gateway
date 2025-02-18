@@ -26,27 +26,16 @@ class AuthController extends AbstractController
 
   public function signIn(SignInRequest $request)
   {
+    $result = $this->repository->signIn($request);
 
-    // $data = $this->request->all();
-
-    // if (!$service->validate('singIn', $data)) return $response->json([
-    //   'message' => 'Login failed',
-    //   'error' => 'validation-failure',
-    //   'errors' => $service->validator->errors()->messages()
-    // ])->withStatus(422);
-
-    // return [
-    //   'message' => 'Login realizado!',
-    //   'data' => $data
-    // ];
+    return $this->response->json($result)->withStatus($this->repository->http_status);
   }
 
   public function signUp(SignUpRequest $request)
   {
     $result = $this->repository->signUp($request);
 
-    return $this->response->json($result)
-      ->withStatus(array_key_exists('status', $result) && $result['status'] ? 201 : 400);
+    return $this->response->json($result)->withStatus($this->repository->http_status);
   }
 
   public function me()
