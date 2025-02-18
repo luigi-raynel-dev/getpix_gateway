@@ -54,13 +54,37 @@ class AuthRepository implements AuthRepositoryInterface
 
   public function signUp($request)
   {
-    $result = (new User)->collection->insertOne([
-      'firstName' => $request->input('firstName'),
-      'lastName' => $request->input('firstName'),
-      'email' => $request->input('email'),
-      'password' => password_hash($request->input('password'), PASSWORD_BCRYPT)
-    ]);
+    try {
+      $userCollection = (new User)->collection;
 
-    return $result;
+      $user = $userCollection->findOne(['email' => $request->input('email')]);
+
+      if ($user) {
+        return [
+          'status' => false,
+          'error' => 'email.exists',
+          'message' => 'Email já cadastrado'
+        ];
+      }
+
+      $result = (new User)->collection->insertOne([
+        'firstName' => $request->input('firstName'),
+        'lastName' => $request->input('lastName'),
+        'email' => $request->input('email'),
+        'password' => password_hash($request->input('password'), PASSWORD_BCRYPT)
+      ]);
+
+      $id = $result->getInsertedId();
+      return [
+        'status' => $id ? true : false,
+        'id' => $id
+      ];
+    } catch (\Throwable $th) {
+      return [
+        'status' => true,
+        'error' => 'sign.up.failed',
+        'message' => $th->getMessage()
+      ];
+    }
   }
 }

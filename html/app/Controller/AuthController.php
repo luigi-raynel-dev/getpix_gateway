@@ -43,7 +43,10 @@ class AuthController extends AbstractController
 
   public function signUp(SignUpRequest $request)
   {
-    return $this->repository->signUp($request);
+    $result = $this->repository->signUp($request);
+
+    return $this->response->json($result)
+      ->withStatus(array_key_exists('status', $result) && $result['status'] ? 201 : 400);
   }
 
   public function me()
