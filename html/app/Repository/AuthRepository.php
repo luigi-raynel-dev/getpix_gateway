@@ -3,24 +3,23 @@
 namespace App\Repository;
 
 use App\Model\User;
-use App\Request\SignInRequest;
-use Firebase\JWT\JWT;
-use Ramsey\Uuid\Uuid;
+use App\Trait\JWTHelper;
 use Carbon\Carbon;
 use function Hyperf\Support\env;
 
 
 class AuthRepository implements AuthRepositoryInterface
 {
+  use JWTHelper;
+
   public int $http_status = 200;
 
   protected $jwtSecretKey;
   protected $userCollection;
 
-
   public function __construct()
   {
-    $this->jwtSecretKey = env('JWT_SECRET_KEY');
+    $this->jwtSecretKey = env('JWT_SECRET_KEY', 'secret');
     $this->userCollection = (new User)->collection;
   }
 
@@ -41,21 +40,15 @@ class AuthRepository implements AuthRepositoryInterface
     }
 
     if (password_verify($password, $user->password)) {
-      $tokenPayload = [
-        'sub' => (string) $user->_id,
-        'iat' => Carbon::now()->timestamp,
-        'exp' => Carbon::now()->addHours(24)->timestamp,
-      ];
-
-      $token = JWT::encode($tokenPayload, $this->jwtSecretKey, 'HS256');
-
+      $sub = (string) $user->_id;
       $user = $user->getArrayCopy();
       unset($user['password']);
 
       return [
         'status' => true,
-        'access_token' => $token,
         'user' => $user,
+        'access_token' => $this->getAccessToken($sub),
+        'refresh_token' => $this->getRefreshToken($sub),
       ];
     }
 
@@ -85,18 +78,26 @@ class AuthRepository implements AuthRepositoryInterface
         $this->http_status = 400;
       }
 
-      $result = $this->userCollection->insertOne([
+      $user = [
         'firstName' => $request->input('firstName'),
         'lastName' => $request->input('lastName'),
         'email' => $request->input('email'),
         'password' => password_hash($request->input('password'), PASSWORD_BCRYPT)
-      ]);
+      ];
+
+      $result = $this->userCollection->insertOne($user);
 
       $id = $result->getInsertedId();
-      if ($id) $this->http_status = 201;
+      if ($id) {
+        $this->http_status = 201;
+        $user['_id'] = $id;
+      }
+
       return [
         'status' => $id ? true : false,
-        'id' => $id
+        'user' => $user,
+        'access_token' => $this->getAccessToken($id),
+        'refresh_token' => $this->getRefreshToken($id),
       ];
     } catch (\Throwable $th) {
       $this->http_status = 400;
