@@ -4,7 +4,6 @@ namespace App\Repository;
 
 use App\Model\User;
 use App\Trait\JWTHelper;
-use Carbon\Carbon;
 use function Hyperf\Support\env;
 
 
@@ -16,11 +15,13 @@ class AuthRepository implements AuthRepositoryInterface
 
   protected $jwtSecretKey;
   protected $userCollection;
+  protected RefreshTokenRepository $refreshTokenRepository;
 
   public function __construct()
   {
     $this->jwtSecretKey = env('JWT_SECRET_KEY', 'secret');
     $this->userCollection = (new User)->collection;
+    $this->refreshTokenRepository = new RefreshTokenRepository();
   }
 
   public function signIn($request)
@@ -48,7 +49,7 @@ class AuthRepository implements AuthRepositoryInterface
         'status' => true,
         'user' => $user,
         'access_token' => $this->getAccessToken($sub),
-        'refresh_token' => $this->getRefreshToken($sub),
+        'refresh_token' => $this->setAndGetRefreshToken($sub),
       ];
     }
 
@@ -95,7 +96,7 @@ class AuthRepository implements AuthRepositoryInterface
           'status' => true,
           'user' => $user,
           'access_token' => $this->getAccessToken($id),
-          'refresh_token' => $this->getRefreshToken($id),
+          'refresh_token' => $this->setAndGetRefreshToken($id),
         ];
       }
 
@@ -118,23 +119,24 @@ class AuthRepository implements AuthRepositoryInterface
   public function refreshToken($request)
   {
     try {
-      $decoded = $this->decodeToken($request->input('refresh_token'));
+      $refreshToken = $request->input('refresh_token');
+      $decoded = $this->decodeToken($refreshToken);
 
-      if (!$decoded or $decoded->aud !== 'refresh') {
+      if (!$decoded or $decoded->aud !== 'refresh' or !$this->refreshTokenRepository->isValidRefreshToken($decoded->sub, $refreshToken)) {
         $this->http_status = 401;
         return [
           'status' => false,
           'error' => 'invalid.token',
-          'message' => 'Token inválido ou expirado',
-          'decoded' => $decoded
+          'message' => 'Token inválido ou expirado'
         ];
       }
+
+      $this->refreshTokenRepository->revokeRefreshToken($decoded->sub, $refreshToken);
 
       return [
         'status' => true,
         'access_token' => $this->getAccessToken($decoded->sub),
-        'refresh_token' => $this->getRefreshToken($decoded->sub),
-        'decoded' => $decoded
+        'refresh_token' => $this->setAndGetRefreshToken($decoded->sub)
       ];
     } catch (\Throwable $th) {
       $this->http_status = 400;
@@ -144,5 +146,14 @@ class AuthRepository implements AuthRepositoryInterface
         'message' => $th->getMessage()
       ];
     }
+  }
+
+  private function setAndGetRefreshToken(string $userId)
+  {
+    $refreshToken = $this->getRefreshToken($userId);
+    $ttl = (int) env('JWT_REFRESH_EXP', "10080");
+    $this->refreshTokenRepository->saveRefreshToken($userId, $refreshToken, $ttl);
+
+    return $refreshToken;
   }
 }
