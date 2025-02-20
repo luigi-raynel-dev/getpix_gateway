@@ -6,7 +6,7 @@ namespace App\Controller;
 
 use App\Repository\AuthRepository;
 use Hyperf\HttpServer\Contract\ResponseInterface;
-use App\Request\{SignInRequest, SignUpRequest};
+use App\Request\{SignInRequest, SignUpRequest, RefreshTokenRequest};
 
 /**
  * @AuthController()
@@ -38,8 +38,10 @@ class AuthController extends AbstractController
     return $this->response->json($result)->withStatus($this->repository->http_status);
   }
 
-  public function me()
+  public function refreshToken(RefreshTokenRequest $request)
   {
-    return ['message' => 'Informações do usuário logado.'];
+    $result = $this->repository->refreshToken($request);
+
+    return $this->response->json($result)->withStatus($this->repository->http_status);
   }
 }

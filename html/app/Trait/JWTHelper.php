@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace App\Trait;
 
-use App\Factory\MongoDBFactory;
 use Carbon\Carbon;
 use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
+
 use function Hyperf\Support\env;
 
 trait JWTHelper
@@ -35,5 +36,15 @@ trait JWTHelper
   {
     $exp = $minutes_to_expire ?? (int) env('JWT_REFRESH_EXP', "10080");
     return $this->generateToken($sub, $exp, 'refresh', $extra_payload);
+  }
+
+  public function decodeToken(string $token)
+  {
+    try {
+      return JWT::decode($token, new Key($this->jwtSecretKey, 'HS256'));
+    } catch (\Throwable $th) {
+      print_r($th);
+      return null;
+    }
   }
 }

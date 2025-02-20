@@ -68,7 +68,6 @@ class AuthRepository implements AuthRepositoryInterface
   public function signUp($request)
   {
     try {
-
       if ($this->getUserByEmail($request->input('email'))) {
         return [
           'status' => false,
@@ -91,19 +90,57 @@ class AuthRepository implements AuthRepositoryInterface
       if ($id) {
         $this->http_status = 201;
         $user['_id'] = $id;
+
+        return [
+          'status' => true,
+          'user' => $user,
+          'access_token' => $this->getAccessToken($id),
+          'refresh_token' => $this->getRefreshToken($id),
+        ];
       }
 
+      $this->http_status = 400;
       return [
-        'status' => $id ? true : false,
-        'user' => $user,
-        'access_token' => $this->getAccessToken($id),
-        'refresh_token' => $this->getRefreshToken($id),
+        'status' => false,
+        'error' => 'sign.up.failed',
+        'message' => 'Erro ao cadastrar usuário'
       ];
     } catch (\Throwable $th) {
       $this->http_status = 400;
       return [
         'status' => false,
         'error' => 'sign.up.failed',
+        'message' => $th->getMessage()
+      ];
+    }
+  }
+
+  public function refreshToken($request)
+  {
+    try {
+      $decoded = $this->decodeToken($request->input('refresh_token'));
+
+      if (!$decoded or $decoded->aud !== 'refresh') {
+        $this->http_status = 401;
+        return [
+          'status' => false,
+          'error' => 'invalid.token',
+          'message' => 'Token inválido ou expirado',
+          'decoded' => $decoded
+        ];
+      }
+
+      return [
+        'status' => true,
+        'access_token' => $this->getAccessToken($decoded->sub),
+        'refresh_token' => $this->getRefreshToken($decoded->sub),
+        'decoded' => $decoded
+      ];
+    } catch (\Throwable $th) {
+      $this->http_status = 400;
+      return [
+        'status' => false,
+        'error' => 'refresh.token.failed',
         'message' => $th->getMessage()
       ];
     }

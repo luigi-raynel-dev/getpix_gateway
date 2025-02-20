@@ -22,5 +22,5 @@ Router::addGroup('/api', function () {
 
     Router::post('/sign-in', 'App\Controller\AuthController@signIn');
     Router::post('/sign-up', 'App\Controller\AuthController@signUp');
-    Router::get('/me', 'App\Controller\AuthController@me');
+    Router::post('/refresh-token', 'App\Controller\AuthController@refreshToken');
 });
