@@ -18,10 +18,10 @@ use Hyperf\Testing\TestCase;
  * @internal
  * @coversNothing
  */
-class ExampleTest extends TestCase
+class HealthTest extends TestCase
 {
-    public function testExample()
+    public function testPing()
     {
-        $this->get('/')->assertOk()->assertSee('Hyperf');
+        $this->get('/api/ping')->assertOk()->assertSee('pong');
     }
 }
