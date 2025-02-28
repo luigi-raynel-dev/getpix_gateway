@@ -12,7 +12,7 @@ return [
     'recv_timeout' => -1,
     'client_id' => '',
     'max_write_attempts' => 3,
-    'bootstrap_servers' => env('KAFKA_SERVERS', '127.0.0.1:9092'),
+    'bootstrap_servers' => env('KAFKA_SERVERS', 'getpix_kafka:9092'),
     'acks' => 0,
     'producer_id' => -1,
     'producer_epoch' => -1,

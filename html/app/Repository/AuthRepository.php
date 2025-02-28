@@ -90,6 +90,7 @@ class AuthRepository implements AuthRepositoryInterface
       $id = $result->getInsertedId();
       if ($id) {
         $this->http_status = 201;
+        unset($user['password']);
         $user['_id'] = $id;
 
         return [
