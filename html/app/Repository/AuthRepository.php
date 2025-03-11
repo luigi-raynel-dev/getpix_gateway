@@ -12,14 +12,11 @@ class AuthRepository implements AuthRepositoryInterface
   use JWTHelper;
 
   public int $http_status = 200;
-
-  protected $jwtSecretKey;
   protected $userCollection;
   protected RefreshTokenRepository $refreshTokenRepository;
 
   public function __construct()
   {
-    $this->jwtSecretKey = env('JWT_SECRET_KEY', 'secret');
     $this->userCollection = (new User)->collection;
     $this->refreshTokenRepository = new RefreshTokenRepository();
   }

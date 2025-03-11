@@ -13,6 +13,16 @@ use function Hyperf\Support\env;
 trait JWTHelper
 {
 
+  /**
+   * @var string|null
+   */
+  private $error;
+
+  public function getError()
+  {
+    return $this->error;
+  }
+
   public function generateToken(int|string $sub, int $minutes_to_expire, string $aud, $extra_payload = [])
   {
     $payload = [
@@ -23,16 +33,16 @@ trait JWTHelper
     ];
 
     $mergedPayload = array_merge($payload, $extra_payload);
-    return JWT::encode($mergedPayload, $this->jwtSecretKey, 'HS256');
+    return JWT::encode($mergedPayload, env('JWT_SECRET_KEY', 'secret'), 'HS256');
   }
 
-  public function getAccessToken(string|int $sub, int $minutes_to_expire = null, $extra_payload = [])
+  public function getAccessToken(string|int $sub, ?int $minutes_to_expire = null, $extra_payload = [])
   {
     $exp = $minutes_to_expire ?? (int) env('JWT_ACCESS_EXP', "60");
     return $this->generateToken($sub, $exp, 'access', $extra_payload);
   }
 
-  public function getRefreshToken(string|int $sub, int $minutes_to_expire = null, $extra_payload = [])
+  public function getRefreshToken(string|int $sub, ?int $minutes_to_expire = null, $extra_payload = [])
   {
     $exp = $minutes_to_expire ?? (int) env('JWT_REFRESH_EXP', "10080");
     return $this->generateToken($sub, $exp, 'refresh', $extra_payload);
@@ -41,9 +51,9 @@ trait JWTHelper
   public function decodeToken(string $token)
   {
     try {
-      return JWT::decode($token, new Key($this->jwtSecretKey, 'HS256'));
+      return JWT::decode($token, new Key(env('JWT_SECRET_KEY', 'secret'), 'HS256'));
     } catch (\Throwable $th) {
-      print_r($th);
+      $this->error = $th->getMessage();
       return null;
     }
   }

@@ -6,6 +6,7 @@ namespace App\Model;
 
 use App\Trait\MongoDBConnection;
 use MongoDB\Collection;
+use MongoDB\BSON\ObjectId;
 
 class User
 {
@@ -18,5 +19,17 @@ class User
   public function __construct()
   {
     $this->connect();
+  }
+
+  protected $projection = [
+    'password' => 0
+  ];
+
+  public function findById(string $id)
+  {
+    return $this->collection->findOne(
+      ['_id' => new ObjectId($id)],
+      ['projection' => $this->projection]
+    );
   }
 }

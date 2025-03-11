@@ -23,4 +23,12 @@ Router::addGroup('/api', function () {
     Router::post('/sign-in', 'App\Controller\AuthController@signIn');
     Router::post('/sign-up', 'App\Controller\AuthController@signUp');
     Router::post('/refresh-token', 'App\Controller\AuthController@refreshToken');
+
+    Router::addGroup(
+        '/users',
+        function () {
+            Router::get('/me', 'App\Controller\UserController@me');
+        },
+        ['middleware' => [\App\Middleware\AuthMiddleware::class]]
+    );
 });
