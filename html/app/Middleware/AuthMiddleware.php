@@ -50,12 +50,11 @@ class AuthMiddleware implements MiddlewareInterface
         'status' => false,
         'message' => 'Token de acesso ausente.',
         'error' => 'unauthorized'
-      ], 401);
+      ])->withStatus(401);
     }
 
     $token = str_replace('Bearer ', '', $token);
     $decoded = $this->decodeToken($token);
-
 
     if (!$decoded or $decoded->aud !== 'access') {
       return $this->response->json([
@@ -63,7 +62,7 @@ class AuthMiddleware implements MiddlewareInterface
         'message' => 'Token de acesso inválido ou expirado.',
         'error' => 'unauthorized',
         'reason' => $this->getError()
-      ], 401);
+      ])->withStatus(401);
     }
 
     $me = (new User)->findById($decoded->sub);
@@ -73,7 +72,7 @@ class AuthMiddleware implements MiddlewareInterface
         'status' => false,
         'message' => 'Usuário não encontrado.',
         'error' => 'unauthorized'
-      ], 401);
+      ])->withStatus(401);
     }
 
     $request = $request->withAttribute('me', $me);
