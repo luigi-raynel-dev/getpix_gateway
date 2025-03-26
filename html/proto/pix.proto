@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+package pix;
+
+service PixService {
+    rpc CreatePixKey (PixKeyRequest) returns (PixKeyResponse);
+    rpc UpdatePixKey (PixKeyRequest) returns (PixKeyResponse);
+    rpc GetPixKeys (PixKeyListRequest) returns (PixKeyListResponse);
+    rpc GetPixKey (PixKeyId) returns (PixKeyResponse);
+    rpc DeletePixKey (PixKeyId) returns (PixKeyResponse);
+}
+
+message PixKeyRequest {
+    PixKey pix_key = 1;
+    string userId = 2;
+    optional string id = 3;
+}
+
+message PixKey {
+    string name = 1;
+    string type = 2;
+    string key = 3;
+    string bankISPB = 4;
+    optional string belongsTo = 5;
+}
+
+message PixKeyResponse {
+    string status = 1;
+    string message = 2;
+}
+
+message PixKeyId {
+    string id = 1;
+    string userId = 2;
+}
+
+message PixKeyListRequest {
+  string userId = 1;
+}
+
+message PixKeyListResponse {
+  repeated PixKey pix_keys = 1;
+}

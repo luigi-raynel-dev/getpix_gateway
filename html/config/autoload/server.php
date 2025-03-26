@@ -9,6 +9,7 @@ declare(strict_types=1);
  * @contact  group@hyperf.io
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
+
 use Hyperf\Server\Event;
 use Hyperf\Server\Server;
 use Swoole\Constant;
@@ -28,6 +29,16 @@ return [
             'options' => [
                 // Whether to enable request lifecycle event
                 'enable_request_lifecycle' => false,
+            ],
+        ],
+        [
+            'name' => 'grpc',
+            'type' => Server::SERVER_HTTP,
+            'host' => 'getpix_pix',
+            'port' => 9503,
+            'sock_type' => SWOOLE_SOCK_TCP,
+            'callbacks' => [
+                Event::ON_REQUEST => [\Hyperf\GrpcServer\Server::class, 'onRequest'],
             ],
         ],
     ],

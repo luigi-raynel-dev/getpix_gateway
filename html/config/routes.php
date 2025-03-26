@@ -31,4 +31,12 @@ Router::addGroup('/api', function () {
         },
         ['middleware' => [\App\Middleware\AuthMiddleware::class]]
     );
+
+    Router::addGroup(
+        '/pixKey',
+        function () {
+            Router::post('', 'App\Controller\PixKeyController@store');
+        },
+        ['middleware' => [\App\Middleware\AuthMiddleware::class]]
+    );
 });
