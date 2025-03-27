@@ -14,4 +14,5 @@ use App\Repository\{AuthRepository, AuthRepositoryInterface};
 
 return [
   AuthRepositoryInterface::class => AuthRepository::class,
+  Hyperf\Rpc\Context::class => Hyperf\Rpc\Context::class,
 ];
