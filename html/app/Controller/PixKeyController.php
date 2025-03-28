@@ -8,6 +8,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Hyperf\HttpServer\Contract\ResponseInterface;
 use App\Producer\LoggerProducer;
 use App\Grpc\PixKeyClient;
+use App\Factory\GrpcClientFactory;
 
 /**
  * @PixKeyController()
@@ -16,20 +17,18 @@ class PixKeyController extends AbstractController
 {
   protected ResponseInterface $response;
   protected LoggerProducer $producer;
+  private PixKeyClient $client;
 
 
-  public function __construct(ResponseInterface $response, LoggerProducer $producer)
+  public function __construct(ResponseInterface $response, LoggerProducer $producer, GrpcClientFactory $grpcClientFactory)
   {
     $this->response = $response;
     $this->producer = $producer;
+    $this->client = $grpcClientFactory->make('grpc', PixKeyClient::class);
   }
 
   public function store(ServerRequestInterface $request)
   {
-    $client = new PixKeyClient('getpix_pix:9503', [
-      'credentials' => null,
-    ]);
-
     $pixKey = new \Pix\PixKey();
     $pixKey->setKey('hyperf@email.com');
     $pixKey->setType('email');
@@ -39,11 +38,17 @@ class PixKeyController extends AbstractController
     $pixKeyRequest->setPixKey($pixKey);
     $pixKeyRequest->setUserId('5d1s54d5s4d4sd54s5d4s');
 
-    /**
-     * @var \Pix\PixKeyResponse
-     */
-    $pixKeyResponse = $client->CreatePixKey($pixKeyRequest);
+    $grpcResponse = $this->client->CreatePixKey($pixKeyRequest);
 
-    return $this->response->json(['message' => $pixKeyResponse->getMessage()])->withStatus($pixKeyResponse->getStatus() ?? 400);
+    if (is_array($grpcResponse) && isset($grpcResponse[0])) {
+      /**
+       * @var \Pix\PixKeyResponse $pixKeyResponse
+       */
+      $pixKeyResponse = $grpcResponse[0];
+      return $this->response->json(['message' => $pixKeyResponse->getMessage()])
+        ->withStatus($pixKeyResponse->getStatus() ?? 400);
+    }
+
+    return $this->response->json(['message' => "error"])->withStatus(400);
   }
 }

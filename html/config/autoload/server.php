@@ -13,6 +13,7 @@ declare(strict_types=1);
 use Hyperf\Server\Event;
 use Hyperf\Server\Server;
 use Swoole\Constant;
+use function Hyperf\Support\env;
 
 return [
     'mode' => SWOOLE_PROCESS,
@@ -34,8 +35,8 @@ return [
         [
             'name' => 'grpc',
             'type' => Server::SERVER_HTTP,
-            'host' => 'getpix_pix',
-            'port' => 9503,
+            'host' => env('GETPIX_PIX_HOST', 'getpix_pix'),
+            'port' => (int) env('GETPIX_PIX_PORT', '9503'),
             'sock_type' => SWOOLE_SOCK_TCP,
             'callbacks' => [
                 Event::ON_REQUEST => [\Hyperf\GrpcServer\Server::class, 'onRequest'],
