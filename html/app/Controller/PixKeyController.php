@@ -9,6 +9,7 @@ use Hyperf\HttpServer\Contract\ResponseInterface;
 use App\Producer\LoggerProducer;
 use App\Grpc\PixKeyClient;
 use App\Factory\GrpcClientFactory;
+use App\Request\CreatePixKeyRequest;
 
 /**
  * @PixKeyController()
@@ -27,16 +28,19 @@ class PixKeyController extends AbstractController
     $this->client = $grpcClientFactory->make('grpc', PixKeyClient::class);
   }
 
-  public function store(ServerRequestInterface $request)
+  public function store(CreatePixKeyRequest $request)
   {
+    $me = $request->getAttribute('me');
+
     $pixKey = new \Pix\PixKey();
-    $pixKey->setKey('hyperf@email.com');
-    $pixKey->setType('email');
-    $pixKey->setBankISPB('20018183');
+    $pixKey->setKey($request->input('key'));
+    $pixKey->setType($request->input('type'));
+    $pixKey->setBankISPB($request->input('bankISPB'));
+    if ($request->has('belongsTo')) $pixKey->setBelongsTo($request->input('belongsTo'));
 
     $pixKeyRequest = new \Pix\PixKeyRequest();
     $pixKeyRequest->setPixKey($pixKey);
-    $pixKeyRequest->setUserId('5d1s54d5s4d4sd54s5d4s');
+    $pixKeyRequest->setUserId((string) $me['_id']);
 
     $grpcResponse = $this->client->CreatePixKey($pixKeyRequest);
 
