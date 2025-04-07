@@ -36,6 +36,7 @@ Router::addGroup('/api', function () {
         '/pixKey',
         function () {
             Router::post('', 'App\Controller\PixKeyController@store');
+            Router::put('/{id}', 'App\Controller\PixKeyController@update');
         },
         ['middleware' => [\App\Middleware\AuthMiddleware::class]]
     );

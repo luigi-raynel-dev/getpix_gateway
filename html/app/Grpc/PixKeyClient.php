@@ -10,10 +10,19 @@ use Pix\PixKeyResponse;
 
 class PixKeyClient extends BaseClient
 {
-  public function CreatePixKey(PixKeyRequest $request)
+  public function createPixKey(PixKeyRequest $request)
   {
     return $this->_simpleRequest(
       '/grpc.pix/createPixKey',
+      $request,
+      [PixKeyResponse::class, 'decode']
+    );
+  }
+
+  public function updatePixKey(PixKeyRequest $request)
+  {
+    return $this->_simpleRequest(
+      '/grpc.pix/updatePixKey',
       $request,
       [PixKeyResponse::class, 'decode']
     );

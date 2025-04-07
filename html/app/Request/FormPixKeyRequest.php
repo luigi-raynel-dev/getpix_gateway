@@ -6,7 +6,7 @@ namespace App\Request;
 
 use Hyperf\Validation\Request\FormRequest;
 
-class CreatePixKeyRequest extends FormRequest
+class FormPixKeyRequest extends FormRequest
 {
   public function authorize()
   {
