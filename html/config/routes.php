@@ -37,6 +37,7 @@ Router::addGroup('/api', function () {
         function () {
             Router::post('', 'App\Controller\PixKeyController@store');
             Router::put('/{id}', 'App\Controller\PixKeyController@update');
+            Router::delete('/{id}', 'App\Controller\PixKeyController@destroy');
         },
         ['middleware' => [\App\Middleware\AuthMiddleware::class]]
     );
