@@ -5,10 +5,19 @@ declare(strict_types=1);
 namespace App\Grpc;
 
 use \Hyperf\GrpcClient\BaseClient;
-use Pix\{PixKeyRequest, PixKeyResponse, PixKeyId};
+use Pix\{PixKeyRequest, PixKeyResponse, PixKeyId, PixKeyListRequest, PixKeyListResponse};
 
 class PixKeyClient extends BaseClient
 {
+  public function getPixKeys(PixKeyListRequest $request)
+  {
+    return $this->_simpleRequest(
+      '/grpc.pix/getPixKeys',
+      $request,
+      [PixKeyListResponse::class, 'decode']
+    );
+  }
+
   public function createPixKey(PixKeyRequest $request)
   {
     return $this->_simpleRequest(

@@ -33,8 +33,10 @@ Router::addGroup('/api', function () {
     );
 
     Router::addGroup(
-        '/pixKey',
+        '/pixKeys',
         function () {
+            Router::get('', 'App\Controller\PixKeyController@index');
+            Router::get('/{id}', 'App\Controller\PixKeyController@show');
             Router::post('', 'App\Controller\PixKeyController@store');
             Router::put('/{id}', 'App\Controller\PixKeyController@update');
             Router::delete('/{id}', 'App\Controller\PixKeyController@destroy');

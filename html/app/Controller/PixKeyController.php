@@ -28,6 +28,39 @@ class PixKeyController extends AbstractController
     $this->client = $grpcClientFactory->make('grpc', PixKeyClient::class);
   }
 
+  public function index(RequestInterface $request)
+  {
+    try {
+      $me = $request->getAttribute('me');
+
+      $pixKeyRequest = new \Pix\PixKeyListRequest();
+      $pixKeyRequest->setUserId((string) $me['_id']);
+
+      $grpcResponse = $this->client->getPixKeys($pixKeyRequest);
+
+      if (is_array($grpcResponse) && isset($grpcResponse[0])) {
+        /**
+         * @var \Pix\PixKeyListResponse $pixKeyResponse
+         */
+        $pixKeyResponse = $grpcResponse[0];
+        var_dump($pixKeyResponse);
+        return $this->response->json([
+          'pixKeys' => json_decode($pixKeyResponse->getPixKeys())
+        ]);
+      }
+
+      return $this->response->json([
+        'status' => false,
+        'message' => "Não foi possível listar as chaves pix."
+      ])->withStatus(400);
+    } catch (\Throwable $th) {
+      return $this->response->json([
+        'status' => false,
+        'message' => $th->getMessage()
+      ])->withStatus(500);
+    }
+  }
+
   public function store(FormPixKeyRequest $request)
   {
     try {

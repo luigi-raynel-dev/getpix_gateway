@@ -9,14 +9,14 @@ use Google\Protobuf\Internal\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
 
 /**
- * Generated from protobuf message <code>pix.PixKeyListResponse</code>
+ * Generated from protobuf message <code>pix.PixKeyShowResponse</code>
  */
-class PixKeyListResponse extends \Google\Protobuf\Internal\Message
+class PixKeyShowResponse extends \Google\Protobuf\Internal\Message
 {
     /**
-     * Generated from protobuf field <code>string pix_keys = 1;</code>
+     * Generated from protobuf field <code>string pix_key = 1;</code>
      */
-    protected $pix_keys = '';
+    protected $pix_key = '';
 
     /**
      * Constructor.
@@ -24,7 +24,7 @@ class PixKeyListResponse extends \Google\Protobuf\Internal\Message
      * @param array $data {
      *     Optional. Data for populating the Message object.
      *
-     *     @type string $pix_keys
+     *     @type string $pix_key
      * }
      */
     public function __construct($data = NULL) {
@@ -33,23 +33,23 @@ class PixKeyListResponse extends \Google\Protobuf\Internal\Message
     }
 
     /**
-     * Generated from protobuf field <code>string pix_keys = 1;</code>
+     * Generated from protobuf field <code>string pix_key = 1;</code>
      * @return string
      */
-    public function getPixKeys()
+    public function getPixKey()
     {
-        return $this->pix_keys;
+        return $this->pix_key;
     }
 
     /**
-     * Generated from protobuf field <code>string pix_keys = 1;</code>
+     * Generated from protobuf field <code>string pix_key = 1;</code>
      * @param string $var
      * @return $this
      */
-    public function setPixKeys($var)
+    public function setPixKey($var)
     {
         GPBUtil::checkString($var, True);
-        $this->pix_keys = $var;
+        $this->pix_key = $var;
 
         return $this;
     }
