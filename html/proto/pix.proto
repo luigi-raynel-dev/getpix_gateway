@@ -38,7 +38,7 @@ message PixKeyListRequest {
 }
 
 message PixKeyShowResponse {
-    string pix_key = 1;
+    optional string pix_key = 1;
 }
 
 message PixKeyListResponse {

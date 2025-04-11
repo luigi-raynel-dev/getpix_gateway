@@ -43,7 +43,6 @@ class PixKeyController extends AbstractController
          * @var \Pix\PixKeyListResponse $pixKeyResponse
          */
         $pixKeyResponse = $grpcResponse[0];
-        var_dump($pixKeyResponse);
         return $this->response->json([
           'pixKeys' => json_decode($pixKeyResponse->getPixKeys())
         ]);
@@ -52,6 +51,41 @@ class PixKeyController extends AbstractController
       return $this->response->json([
         'status' => false,
         'message' => "Não foi possível listar as chaves pix."
+      ])->withStatus(400);
+    } catch (\Throwable $th) {
+      return $this->response->json([
+        'status' => false,
+        'message' => $th->getMessage()
+      ])->withStatus(500);
+    }
+  }
+
+  public function show(string $id, RequestInterface $request)
+  {
+    try {
+      $me = $request->getAttribute('me');
+
+      $pixKeyRequest = new \Pix\PixKeyId();
+      $pixKeyRequest->setId($id);
+      $pixKeyRequest->setUserId((string) $me['_id']);
+
+      $grpcResponse = $this->client->getPixKey($pixKeyRequest);
+
+      if (is_array($grpcResponse) && isset($grpcResponse[0])) {
+        /**
+         * @var \Pix\PixKeyShowResponse $pixKeyResponse
+         */
+        $pixKeyResponse = $grpcResponse[0];
+        $pixKey = $pixKeyResponse->getPixKey();
+        var_dump($pixKey);
+        return $this->response->json([
+          'pixKey' => $pixKey ? json_decode($pixKeyResponse->getPixKey()) : null,
+        ])->withStatus($pixKey ? 200 : 404);
+      }
+
+      return $this->response->json([
+        'status' => false,
+        'message' => "Não foi possível buscar a chave pix."
       ])->withStatus(400);
     } catch (\Throwable $th) {
       return $this->response->json([

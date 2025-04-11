@@ -14,9 +14,9 @@ use Google\Protobuf\Internal\GPBUtil;
 class PixKeyShowResponse extends \Google\Protobuf\Internal\Message
 {
     /**
-     * Generated from protobuf field <code>string pix_key = 1;</code>
+     * Generated from protobuf field <code>optional string pix_key = 1;</code>
      */
-    protected $pix_key = '';
+    protected $pix_key = null;
 
     /**
      * Constructor.
@@ -33,16 +33,26 @@ class PixKeyShowResponse extends \Google\Protobuf\Internal\Message
     }
 
     /**
-     * Generated from protobuf field <code>string pix_key = 1;</code>
+     * Generated from protobuf field <code>optional string pix_key = 1;</code>
      * @return string
      */
     public function getPixKey()
     {
-        return $this->pix_key;
+        return isset($this->pix_key) ? $this->pix_key : '';
+    }
+
+    public function hasPixKey()
+    {
+        return isset($this->pix_key);
+    }
+
+    public function clearPixKey()
+    {
+        unset($this->pix_key);
     }
 
     /**
-     * Generated from protobuf field <code>string pix_key = 1;</code>
+     * Generated from protobuf field <code>optional string pix_key = 1;</code>
      * @param string $var
      * @return $this
      */
