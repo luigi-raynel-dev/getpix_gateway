@@ -4,53 +4,53 @@ declare(strict_types=1);
 
 namespace App\Grpc;
 
-use \Hyperf\GrpcClient\BaseClient;
 use Pix\{PixKeyRequest, PixKeyResponse, PixKeyId, PixKeyListRequest, PixKeyListResponse, PixKeyShowResponse};
 
-class PixKeyClient extends BaseClient
+class PixKeyClient extends GrpcClient
 {
+
   public function getPixKeys(PixKeyListRequest $request)
   {
-    return $this->_simpleRequest(
+    return $this->grpcRequest(
       '/grpc.pix/getPixKeys',
       $request,
-      [PixKeyListResponse::class, 'decode']
+      PixKeyListResponse::class
     );
   }
 
   public function getPixKey(PixKeyId $request)
   {
-    return $this->_simpleRequest(
+    return $this->grpcRequest(
       '/grpc.pix/getPixKey',
       $request,
-      [PixKeyShowResponse::class, 'decode']
+      PixKeyShowResponse::class
     );
   }
 
   public function createPixKey(PixKeyRequest $request)
   {
-    return $this->_simpleRequest(
+    return $this->grpcRequest(
       '/grpc.pix/createPixKey',
       $request,
-      [PixKeyResponse::class, 'decode']
+      PixKeyResponse::class
     );
   }
 
   public function updatePixKey(PixKeyRequest $request)
   {
-    return $this->_simpleRequest(
+    return $this->grpcRequest(
       '/grpc.pix/updatePixKey',
       $request,
-      [PixKeyResponse::class, 'decode']
+      PixKeyResponse::class
     );
   }
 
   public function deletePixKey(PixKeyId $request)
   {
-    return $this->_simpleRequest(
+    return $this->grpcRequest(
       '/grpc.pix/deletePixKey',
       $request,
-      [PixKeyResponse::class, 'decode']
+      PixKeyResponse::class
     );
   }
 }
