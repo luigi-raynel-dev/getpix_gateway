@@ -60,6 +60,22 @@ services:
     networks:
       - docker_dbserver_default
 
+  prometheus:
+    image: prom/prometheus
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    networks:
+      - docker_dbserver_default
+
+  grafana:
+    image: grafana/grafana
+    ports:
+      - "3000:3000"
+    networks:
+      - docker_dbserver_default
+
 networks:
   docker_dbserver_default:
     external: true
