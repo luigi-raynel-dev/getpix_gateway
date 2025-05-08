@@ -2,6 +2,6 @@ global:
   scrape_interval: 5s
 
 scrape_configs:
-  - job_name: 'getpix_app'
+  - job_name: 'getpix_app_metrics'
     static_configs:
-      - targets: ['getpix_app:9501']
+      - targets: ['getpix_app:9510']

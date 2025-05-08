@@ -19,6 +19,7 @@ services:
       - KAFKA_BROKER=getpix_kafka:9092
     ports:
       - "9501:9501"
+      - "9510:9510"
     volumes:
       - ./html:/var/www/html
     working_dir: /var/www/html
