@@ -14,6 +14,5 @@ use App\Repository\{AuthRepository, AuthRepositoryInterface};
 
 return [
   AuthRepositoryInterface::class => AuthRepository::class,
-  Hyperf\Rpc\Context::class => Hyperf\Rpc\Context::class,
-  Prometheus\Storage\Adapter::class => Hyperf\Metric\Adapter\Prometheus\RedisStorageFactory::class,
+  Hyperf\Rpc\Context::class => Hyperf\Rpc\Context::class
 ];

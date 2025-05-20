@@ -17,7 +17,7 @@ RUN apt-get update && apt-get install -y \
   pkg-config \
   && docker-php-ext-install pdo mbstring exif pcntl bcmath gd
 
-RUN pecl install mongodb && docker-php-ext-enable mongodb
+RUN pecl install mongodb-1.16.2 && docker-php-ext-enable mongodb
 RUN pecl install rdkafka && docker-php-ext-enable rdkafka
 RUN pecl install swoole --configure-options="--enable-brotli=no" && docker-php-ext-enable swoole
 RUN pecl install redis && docker-php-ext-enable redis

@@ -63,6 +63,7 @@ services:
 
   prometheus:
     image: prom/prometheus
+    container_name: getpix_prometheus
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
     ports:
@@ -72,6 +73,7 @@ services:
 
   grafana:
     image: grafana/grafana
+    container_name: getpix_grafana
     ports:
       - "3000:3000"
     networks:
