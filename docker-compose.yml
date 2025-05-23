@@ -1,7 +1,6 @@
 version: '3.8'
 
 services:
-  ### 🚀 Aplicação HyperF com Swoole ###
   app:
     build:
       context: .
@@ -26,7 +25,6 @@ services:
     networks:
       - docker_dbserver_default
   
-  ### 🔄 Kafka + Zookeeper ###
   zookeeper:
     image: confluentinc/cp-zookeeper:latest
     container_name: getpix_zookeeper
