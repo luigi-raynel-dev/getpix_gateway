@@ -1,0 +1,312 @@
+{
+	"info": {
+		"_postman_id": "51529ba3-e1bd-40c0-bfc7-a060b292cb1f",
+		"name": "Gateway",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "18943127"
+	},
+	"item": [
+		{
+			"name": "public",
+			"item": [
+				{
+					"name": "Auth",
+					"item": [
+						{
+							"name": "Sign Up",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"firstName\": \"John\",\r\n    \"lastName\": \"Doe\",\r\n    \"email\": \"jonhdoe@email.com\",\r\n    \"password\": \"mystrongpassword\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{api_url}}/api/sign-up",
+									"host": [
+										"{{api_url}}"
+									],
+									"path": [
+										"api",
+										"sign-up"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Sign In",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Response contains the property access_token\", function () {   \r",
+											"    if (pm.response.json().hasOwnProperty('access_token')) {\r",
+											"        pm.environment.set('access_token', pm.response.json().access_token);\r",
+											"    }\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"email\": \"jonhdoe@email.com\",\r\n    \"password\": \"mystrongpassword\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{api_url}}/api/sign-in",
+									"host": [
+										"{{api_url}}"
+									],
+									"path": [
+										"api",
+										"sign-in"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Refresh token",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"refresh_token\": \"my_jwt_for_refreshing_token\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{api_url}}/api/refresh-token",
+									"host": [
+										"{{api_url}}"
+									],
+									"path": [
+										"api",
+										"refresh-token"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "ping",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/api/ping",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"api",
+								"ping"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "private",
+			"item": [
+				{
+					"name": "User",
+					"item": [
+						{
+							"name": "Me",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{api_url}}/api/users/me",
+									"host": [
+										"{{api_url}}"
+									],
+									"path": [
+										"api",
+										"users",
+										"me"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "PixKey",
+					"item": [
+						{
+							"name": "Index",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{api_url}}/api/pixKeys",
+									"host": [
+										"{{api_url}}"
+									],
+									"path": [
+										"api",
+										"pixKeys"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Show",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{api_url}}/api/pixKeys/67efcca91d53e7b3ee0b8392",
+									"host": [
+										"{{api_url}}"
+									],
+									"path": [
+										"api",
+										"pixKeys",
+										"67efcca91d53e7b3ee0b8392"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Store",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"key\": \"11987654321\",\r\n    \"type\": \"phone\",\r\n    \"bankISPB\": \"18236120\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{api_url}}/api/pixKeys",
+									"host": [
+										"{{api_url}}"
+									],
+									"path": [
+										"api",
+										"pixKeys"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"key\": \"jhondoe@email.com\",\r\n    \"type\": \"email\",\r\n    \"bankISPB\": \"08561701\",\r\n    \"belongsTo\": \"Jonh Doe\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{api_url}}/api/pixKeys/67efcca91d53e7b3ee0b83920",
+									"host": [
+										"{{api_url}}"
+									],
+									"path": [
+										"api",
+										"pixKeys",
+										"67efcca91d53e7b3ee0b83920"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{api_url}}/api/pixKeys/67fcf73b291c9c7066002f82",
+									"host": [
+										"{{api_url}}"
+									],
+									"path": [
+										"api",
+										"pixKeys",
+										"67fcf73b291c9c7066002f82"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{access_token}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		}
+	]
+}
